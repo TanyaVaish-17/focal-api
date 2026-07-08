@@ -1,7 +1,5 @@
 # 🧠 Focal API — Backend Session Tracker
 
-<div align="center">
-
 **A RESTful backend API for tracking focus and break sessions, built with Node.js, Express, and TypeScript.**
 
 > **Project 2 — Backend API Development**  
@@ -12,8 +10,6 @@
 ![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
 ![Zod](https://img.shields.io/badge/Zod-3B82F6?style=for-the-badge)
 
-</div>
-
 ---
 
 # 📖 Overview
@@ -21,6 +17,20 @@
 Focal API is the backend service for the **Focal Focus Timer** application. It provides a clean REST API to create, retrieve, update, and delete focus sessions while ensuring every request is validated before reaching the business logic.
 
 The project follows a layered architecture with centralized error handling, request logging, and type-safe development using TypeScript.
+
+---
+
+# 🌐 Live API
+
+**Base URL**
+
+https://focal-api.onrender.com
+
+**Health Check**
+
+https://focal-api.onrender.com/health
+
+> **Note:** The API is hosted on Render's free tier, so the first request may take 30–60 seconds to wake up the server.
 
 ---
 
@@ -88,7 +98,8 @@ NODE_ENV=development
 # 🚀 Getting Started
 
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/TanyaVaish-17/focal-api.git
+
 cd focal-api
 
 npm install
@@ -98,7 +109,7 @@ cp .env.example .env
 npm run dev
 ```
 
-Server runs at:
+Server runs locally at:
 
 ```text
 http://localhost:5000
@@ -136,7 +147,7 @@ curl -X POST http://localhost:5000/api/sessions \
 Successful `POST /api/sessions` request returning **201 Created**.
 
 <p align="center">
-  <img src="./screenshots/create-session-success.png" alt="Create Session Success" width="900">
+  <img src="./screenshots/create-session-success.png" alt="Create Session Success">
 </p>
 
 ---
@@ -146,7 +157,7 @@ Successful `POST /api/sessions` request returning **201 Created**.
 Invalid request returning **400 Bad Request** with validation details.
 
 <p align="center">
-  <img src="./screenshots/validation-error.png" alt="Validation Error" width="900">
+  <img src="./screenshots/validation-error.png" alt="Validation Error">
 </p>
 
 ---
@@ -156,7 +167,7 @@ Invalid request returning **400 Bad Request** with validation details.
 - 🗄️ Integrate MongoDB or PostgreSQL
 - 🔐 Add JWT Authentication
 - 📄 Pagination & Filtering
-- 🧪 Unit and Integration Tests
+- 🧪 Unit & Integration Tests
 
 ---
 
@@ -169,8 +180,4 @@ DecodeLabs (Batch 2026)
 
 ---
 
-<div align="center">
-
-⭐ If you like this project, consider giving it a star!
-
-</div>
+⭐ If you found this project helpful, consider giving it a star!
