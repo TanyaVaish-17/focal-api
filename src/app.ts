@@ -1,6 +1,8 @@
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import sessionRoutes from './routes/session.routes';
+import { notFoundHandler } from './middleware/notFoundHandler';
+import { errorHandler } from './middleware/errorHandler';
 
 export function createApp(): Application {
   const app = express();
@@ -13,6 +15,9 @@ export function createApp(): Application {
   });
 
   app.use('/api/sessions', sessionRoutes);
+
+  app.use(notFoundHandler);
+  app.use(errorHandler);
 
   return app;
 }
