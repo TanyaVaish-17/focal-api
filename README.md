@@ -131,18 +131,23 @@ curl -X POST http://localhost:5000/api/sessions \
 
 # 📸 Screenshots
 
-Create a `screenshots/` folder and add:
+### ✅ Create Session
 
-| Screenshot | Description |
-|------------|-------------|
-| `create-session-success.png` | Successful `POST /api/sessions` request (`201 Created`) |
-| `validation-error.png` | Invalid request showing validation error (`400 Bad Request`) |
+Successful `POST /api/sessions` request returning **201 Created**.
 
-```text
-screenshots/
-├── create-session-success.png
-└── validation-error.png
-```
+<p align="center">
+  <img src="./screenshots/create-session-success.png" alt="Create Session Success" width="900">
+</p>
+
+---
+
+### ❌ Validation Error
+
+Invalid request returning **400 Bad Request** with validation details.
+
+<p align="center">
+  <img src="./screenshots/validation-error.png" alt="Validation Error" width="900">
+</p>
 
 ---
 
