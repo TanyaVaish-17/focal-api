@@ -1,35 +1,41 @@
-import { FocusSession, SessionMode } from '../models/session.model';
+import { FocusSessionDocument, SessionMode } from '../models/session.model';
 import { sessionRepository } from '../repositories/session.repository';
-import { generateId } from '../utils/id';
 import { CreateSessionInput, UpdateSessionInput } from '../schemas/session.schema';
 
 export const sessionService = {
-  listSessions(): FocusSession[] {
+  async listSessions(): Promise<FocusSessionDocument[]> {
     return sessionRepository.findAll();
   },
 
-  getSession(id: string): FocusSession | undefined {
+  async getSession(id: string): Promise<FocusSessionDocument | null> {
     return sessionRepository.findById(id);
   },
 
-  startSession(input: CreateSessionInput): FocusSession {
-    const session: FocusSession = {
-      id: generateId(),
+  async startSession(input: CreateSessionInput): Promise<FocusSessionDocument> {
+    return sessionRepository.create({
       mode: input.mode as SessionMode,
       durationMinutes: input.durationMinutes,
-      startedAt: new Date().toISOString(),
-      completedAt: null,
       note: input.note ?? null,
-    };
-
-    return sessionRepository.create(session);
+    });
   },
 
-  updateSession(id: string, input: UpdateSessionInput): FocusSession | undefined {
-    return sessionRepository.update(id, input);
+  async updateSession(
+    id: string,
+    input: UpdateSessionInput
+  ): Promise<FocusSessionDocument | null> {
+    const updates: Partial<FocusSessionDocument> = {};
+
+    if (input.note !== undefined) {
+      updates.note = input.note;
+    }
+    if (input.completedAt !== undefined) {
+      updates.completedAt = new Date(input.completedAt);
+    }
+
+    return sessionRepository.update(id, updates);
   },
 
-  deleteSession(id: string): boolean {
+  async deleteSession(id: string): Promise<boolean> {
     return sessionRepository.delete(id);
   },
 };

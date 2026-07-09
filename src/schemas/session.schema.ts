@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+// Applied when a session is created (POST /api/sessions)
 export const createSessionSchema = z.object({
   mode: z.enum(['focus', 'break'], {
     error: (issue) =>
@@ -15,6 +16,8 @@ export const createSessionSchema = z.object({
   note: z.string().trim().max(280, 'note cannot exceed 280 characters').optional(),
 });
 
+// Applied when a session is updated (PUT /api/sessions/:id)
+// Everything optional — a partial update shouldn't require resending the whole object
 export const updateSessionSchema = z.object({
   completedAt: z
     .string()
@@ -23,8 +26,10 @@ export const updateSessionSchema = z.object({
   note: z.string().trim().max(280, 'note cannot exceed 280 characters').optional(),
 });
 
+// Applied to the :id route param on every session route.
+// MongoDB ObjectIds are 24-character hex strings, not UUIDs.
 export const sessionIdParamSchema = z.object({
-  id: z.string().uuid('id must be a valid UUID'),
+  id: z.string().regex(/^[0-9a-fA-F]{24}$/, 'id must be a valid MongoDB ObjectId'),
 });
 
 export type CreateSessionInput = z.infer<typeof createSessionSchema>;

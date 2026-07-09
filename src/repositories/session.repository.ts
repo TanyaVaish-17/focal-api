@@ -1,35 +1,34 @@
-import { FocusSession } from '../models/session.model';
+import { SessionModel, FocusSessionDocument } from '../models/session.model';
 
+// Same method names and shapes as the in-memory version from Project 2 —
+// controllers and services call this exactly the same way. Only the
+// implementation changed, from an array to real persistence.
 class SessionRepository {
-  private sessions: FocusSession[] = [];
-
-  findAll(): FocusSession[] {
-    return this.sessions;
+  async findAll(): Promise<FocusSessionDocument[]> {
+    return SessionModel.find().sort({ startedAt: -1 });
   }
 
-  findById(id: string): FocusSession | undefined {
-    return this.sessions.find((session) => session.id === id);
+  async findById(id: string): Promise<FocusSessionDocument | null> {
+    return SessionModel.findById(id);
   }
 
-  create(session: FocusSession): FocusSession {
-    this.sessions.push(session);
-    return session;
+  async create(data: Partial<FocusSessionDocument>): Promise<FocusSessionDocument> {
+    return SessionModel.create(data);
   }
 
-  update(id: string, updates: Partial<FocusSession>): FocusSession | undefined {
-    const session = this.findById(id);
-    if (!session) return undefined;
-
-    Object.assign(session, updates);
-    return session;
+  async update(
+    id: string,
+    updates: Partial<FocusSessionDocument>
+  ): Promise<FocusSessionDocument | null> {
+    return SessionModel.findByIdAndUpdate(id, updates, {
+      new: true,          // return the updated document, not the original
+      runValidators: true, // re-run schema validation on update, not just create
+    });
   }
 
-  delete(id: string): boolean {
-    const index = this.sessions.findIndex((session) => session.id === id);
-    if (index === -1) return false;
-
-    this.sessions.splice(index, 1);
-    return true;
+  async delete(id: string): Promise<boolean> {
+    const result = await SessionModel.findByIdAndDelete(id);
+    return result !== null;
   }
 }
 

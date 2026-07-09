@@ -8,39 +8,39 @@ import {
 import { ApiError } from '../utils/ApiError';
 
 export const sessionController = {
-  list(_req: Request, res: Response) {
-    const sessions = sessionService.listSessions();
+  async list(_req: Request, res: Response) {
+    const sessions = await sessionService.listSessions();
     res.status(200).json({ data: sessions });
   },
 
-  getOne(req: Request, res: Response) {
+  async getOne(req: Request, res: Response) {
     const { id } = sessionIdParamSchema.parse(req.params);
-    const session = sessionService.getSession(id);
+    const session = await sessionService.getSession(id);
     if (!session) {
       throw new ApiError(404, `No session found with id ${id}`);
     }
     res.status(200).json({ data: session });
   },
 
-  create(req: Request, res: Response) {
+  async create(req: Request, res: Response) {
     const parsed = createSessionSchema.parse(req.body);
-    const session = sessionService.startSession(parsed);
+    const session = await sessionService.startSession(parsed);
     res.status(201).json({ data: session });
   },
 
-  update(req: Request, res: Response) {
+  async update(req: Request, res: Response) {
     const { id } = sessionIdParamSchema.parse(req.params);
     const parsed = updateSessionSchema.parse(req.body);
-    const session = sessionService.updateSession(id, parsed);
+    const session = await sessionService.updateSession(id, parsed);
     if (!session) {
       throw new ApiError(404, `No session found with id ${id}`);
     }
     res.status(200).json({ data: session });
   },
 
-  remove(req: Request, res: Response) {
+  async remove(req: Request, res: Response) {
     const { id } = sessionIdParamSchema.parse(req.params);
-    const deleted = sessionService.deleteSession(id);
+    const deleted = await sessionService.deleteSession(id);
     if (!deleted) {
       throw new ApiError(404, `No session found with id ${id}`);
     }
