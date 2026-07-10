@@ -1,7 +1,8 @@
-# 🧠 Focal API — Database-Backed Session Tracker
+# 🧠 Focal API — Backend Session Tracker with MongoDB Persistence
 
 **A RESTful backend API for tracking focus and break sessions, built with Node.js, Express, TypeScript, and MongoDB.**
 
+> **Project 2 — Backend API Development**  
 > **Project 3 — Database Integration**  
 > DecodeLabs Full Stack Internship (Batch 2026)
 
@@ -15,9 +16,12 @@
 
 # 📖 Overview
 
-Focal API is the backend service for the **Focal Focus Timer** application. It provides a clean REST API to create, retrieve, update, and delete focus sessions, now persisted permanently to **MongoDB Atlas** via Mongoose instead of an in-memory store.
+Focal API is the backend service for the **Focal Focus Timer** application, built across two connected DecodeLabs milestones in this same repository:
 
-The project follows a layered architecture (Routes → Controllers → Services → Repository) with centralized error handling, request logging, and type-safe development using TypeScript. Swapping storage from in-memory to MongoDB required changing only the repository layer — controllers and services stayed structurally the same.
+- **Project 2 (Backend API Development):** a layered Express + TypeScript API with full CRUD, Zod request validation, and centralized error handling, originally backed by an in-memory store
+- **Project 3 (Database Integration):** the in-memory store replaced with **MongoDB Atlas** via Mongoose, adding schema-level validation, indexing, and NoSQL-injection-safe queries — with no changes needed to the controller or service layers, since the layered architecture from Project 2 kept storage isolated from business logic
+
+**This repo link is submitted for both milestones.** Everything below reflects the current, complete state of the project — proof screenshots for both projects are included in the Screenshots section.
 
 ---
 
@@ -31,23 +35,28 @@ https://focal-api.onrender.com
 
 https://focal-api.onrender.com/health
 
-> **Note:** The API is hosted on Render's free tier, so the first request may take 30–60 seconds to wake up the server. Data now persists in MongoDB Atlas, so sessions survive server restarts and cold starts — unlike Project 2's in-memory version.
+> **Note:** The API is hosted on Render's free tier, so the first request may take 30–60 seconds to wake up the server. Data now persists in MongoDB Atlas, so sessions survive server restarts and cold starts.
 
 ---
 
 # ✨ Features
 
+**From Project 2 — Backend API Development:**
 - 🚀 Full CRUD operations for focus sessions
-- 🗄️ **MongoDB Atlas + Mongoose** — schema-level validation (`required`, `enum`, `min`/`max`, `maxlength`) enforced at the database layer
-- 🛡️ **Two-layer validation** — Zod validates request shape, Mongoose validates document shape before persistence
-- 🚫 **NoSQL-injection safe** — route params validated against a strict ObjectId pattern before ever reaching a query
-- 📇 Indexed `mode` field for efficient filtering as the collection grows
+- 🛡️ Request validation using **Zod**
 - 📦 Layered architecture (Routes → Controllers → Services → Repository)
 - ⚠️ Centralized error handling
 - 📝 Request logging middleware
 - ❤️ Health check endpoint
 - 🔧 Environment-based configuration
 - 💯 Type-safe code with TypeScript
+
+**Added in Project 3 — Database Integration:**
+- 🗄️ **MongoDB Atlas + Mongoose** — schema-level validation (`required`, `enum`, `min`/`max`, `maxlength`) enforced at the database layer
+- 🛡️ **Two-layer validation** — Zod validates request shape, Mongoose validates document shape before persistence
+- 🚫 **NoSQL-injection safe** — route params validated against a strict ObjectId pattern before ever reaching a query
+- 📇 Indexed `mode` field for efficient filtering as the collection grows
+- 💾 Data now survives server restarts and Render cold starts
 
 ---
 
@@ -152,7 +161,7 @@ curl -X POST http://localhost:5000/api/sessions \
 
 # 📸 Screenshots
 
-### ✅ Create Session
+### ✅ Create Session — Project 2
 
 Successful `POST /api/sessions` request returning **201 Created**.
 
@@ -162,7 +171,7 @@ Successful `POST /api/sessions` request returning **201 Created**.
 
 ---
 
-### ❌ Validation Error
+### ❌ Validation Error — Project 2
 
 Invalid request returning **400 Bad Request** with validation details.
 
@@ -172,7 +181,7 @@ Invalid request returning **400 Bad Request** with validation details.
 
 ---
 
-### 🗄️ Session Persisted in MongoDB Atlas
+### 🗄️ Session Persisted in MongoDB Atlas — Project 3
 
 Data Explorer showing the `sessions` collection with real documents, proving persistence beyond the server process.
 
@@ -182,7 +191,7 @@ Data Explorer showing the `sessions` collection with real documents, proving per
 
 ---
 
-### 🚫 Injection Rejected
+### 🚫 Injection Rejected — Project 3
 
 A malformed/malicious `:id` returning **400 Bad Request** instead of reaching the database.
 
