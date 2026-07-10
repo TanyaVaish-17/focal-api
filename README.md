@@ -1,22 +1,23 @@
-# 🧠 Focal API — Backend Session Tracker
+# 🧠 Focal API — Database-Backed Session Tracker
 
-**A RESTful backend API for tracking focus and break sessions, built with Node.js, Express, and TypeScript.**
+**A RESTful backend API for tracking focus and break sessions, built with Node.js, Express, TypeScript, and MongoDB.**
 
-> **Project 2 — Backend API Development**  
+> **Project 3 — Database Integration**  
 > DecodeLabs Full Stack Internship (Batch 2026)
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
 ![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
 ![Zod](https://img.shields.io/badge/Zod-3B82F6?style=for-the-badge)
 
 ---
 
 # 📖 Overview
 
-Focal API is the backend service for the **Focal Focus Timer** application. It provides a clean REST API to create, retrieve, update, and delete focus sessions while ensuring every request is validated before reaching the business logic.
+Focal API is the backend service for the **Focal Focus Timer** application. It provides a clean REST API to create, retrieve, update, and delete focus sessions, now persisted permanently to **MongoDB Atlas** via Mongoose instead of an in-memory store.
 
-The project follows a layered architecture with centralized error handling, request logging, and type-safe development using TypeScript.
+The project follows a layered architecture (Routes → Controllers → Services → Repository) with centralized error handling, request logging, and type-safe development using TypeScript. Swapping storage from in-memory to MongoDB required changing only the repository layer — controllers and services stayed structurally the same.
 
 ---
 
@@ -30,14 +31,17 @@ https://focal-api.onrender.com
 
 https://focal-api.onrender.com/health
 
-> **Note:** The API is hosted on Render's free tier, so the first request may take 30–60 seconds to wake up the server.
+> **Note:** The API is hosted on Render's free tier, so the first request may take 30–60 seconds to wake up the server. Data now persists in MongoDB Atlas, so sessions survive server restarts and cold starts — unlike Project 2's in-memory version.
 
 ---
 
 # ✨ Features
 
 - 🚀 Full CRUD operations for focus sessions
-- 🛡️ Request validation using **Zod**
+- 🗄️ **MongoDB Atlas + Mongoose** — schema-level validation (`required`, `enum`, `min`/`max`, `maxlength`) enforced at the database layer
+- 🛡️ **Two-layer validation** — Zod validates request shape, Mongoose validates document shape before persistence
+- 🚫 **NoSQL-injection safe** — route params validated against a strict ObjectId pattern before ever reaching a query
+- 📇 Indexed `mode` field for efficient filtering as the collection grows
 - 📦 Layered architecture (Routes → Controllers → Services → Repository)
 - ⚠️ Centralized error handling
 - 📝 Request logging middleware
@@ -54,8 +58,9 @@ https://focal-api.onrender.com/health
 | Runtime | Node.js |
 | Framework | Express.js |
 | Language | TypeScript |
-| Validation | Zod |
-| Storage | In-Memory Repository |
+| Database | MongoDB Atlas |
+| ODM | Mongoose |
+| Validation | Zod (request) + Mongoose schema (persistence) |
 | Tooling | ts-node-dev, ESLint, Prettier |
 
 ---
@@ -65,11 +70,11 @@ https://focal-api.onrender.com/health
 ```text
 focal-api/
 ├── src/
-│   ├── config/
+│   ├── config/          # env config + MongoDB connection
 │   ├── controllers/
 │   ├── middleware/
-│   ├── models/
-│   ├── repositories/
+│   ├── models/          # Mongoose schema
+│   ├── repositories/    # MongoDB data access
 │   ├── routes/
 │   ├── schemas/
 │   ├── services/
@@ -91,6 +96,7 @@ Create a `.env` file:
 ```env
 PORT=5000
 NODE_ENV=development
+MONGODB_URI=mongodb+srv://<user>:<password>@<cluster>.mongodb.net/focal
 ```
 
 ---
@@ -106,6 +112,8 @@ npm install
 
 cp .env.example .env
 
+# edit .env with your own MongoDB Atlas connection string
+
 npm run dev
 ```
 
@@ -114,6 +122,8 @@ Server runs locally at:
 ```text
 http://localhost:5000
 ```
+
+On startup you should see `MongoDB connected` before `Focal API running on...`.
 
 ---
 
@@ -142,32 +152,32 @@ curl -X POST http://localhost:5000/api/sessions \
 
 # 📸 Screenshots
 
-### ✅ Create Session
+### ✅ Session Persisted in MongoDB Atlas
 
-Successful `POST /api/sessions` request returning **201 Created**.
+Data Explorer showing the `sessions` collection with real documents, proving persistence beyond the server process.
 
 <p align="center">
-  <img src="./screenshots/create-session-success.png" alt="Create Session Success">
+  <img src="./screenshots/session-persisted-in-atlas.png" alt="Session Persisted in Atlas">
 </p>
 
 ---
 
-### ❌ Validation Error
+### 🚫 Injection Rejected
 
-Invalid request returning **400 Bad Request** with validation details.
+A malformed/malicious `:id` returning **400 Bad Request** instead of reaching the database — the request never gets the chance to execute as a query.
 
 <p align="center">
-  <img src="./screenshots/validation-error.png" alt="Validation Error">
+  <img src="./screenshots/injection-rejected.png" alt="Injection Rejected">
 </p>
 
 ---
 
 # 🔮 Future Improvements
 
-- 🗄️ Integrate MongoDB or PostgreSQL
-- 🔐 Add JWT Authentication
-- 📄 Pagination & Filtering
+- 🔐 Add JWT Authentication (Project 4 territory)
+- 📄 Pagination & date-range filtering on `GET /api/sessions`
 - 🧪 Unit & Integration Tests
+- 📇 Compound index on `mode` + `startedAt` once query patterns are clearer
 
 ---
 
