@@ -152,7 +152,27 @@ curl -X POST http://localhost:5000/api/sessions \
 
 # 📸 Screenshots
 
-### ✅ Session Persisted in MongoDB Atlas
+### ✅ Create Session
+
+Successful `POST /api/sessions` request returning **201 Created**.
+
+<p align="center">
+  <img src="./screenshots/create-session-success.png" alt="Create Session Success">
+</p>
+
+---
+
+### ❌ Validation Error
+
+Invalid request returning **400 Bad Request** with validation details.
+
+<p align="center">
+  <img src="./screenshots/validation-error.png" alt="Validation Error">
+</p>
+
+---
+
+### 🗄️ Session Persisted in MongoDB Atlas
 
 Data Explorer showing the `sessions` collection with real documents, proving persistence beyond the server process.
 
@@ -164,7 +184,7 @@ Data Explorer showing the `sessions` collection with real documents, proving per
 
 ### 🚫 Injection Rejected
 
-A malformed/malicious `:id` returning **400 Bad Request** instead of reaching the database — the request never gets the chance to execute as a query.
+A malformed/malicious `:id` returning **400 Bad Request** instead of reaching the database.
 
 <p align="center">
   <img src="./screenshots/injection-rejected.png" alt="Injection Rejected">
